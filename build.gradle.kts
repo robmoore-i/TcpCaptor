@@ -21,7 +21,9 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
     testLogging {
         showStandardStreams = true
+        showExceptions = true
     }
+    dependsOn("createTruststore")
 }
 
 apply<TestKeystoresPlugin>()
