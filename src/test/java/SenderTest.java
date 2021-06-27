@@ -11,7 +11,7 @@ import static org.hamcrest.Matchers.hasItem;
 public class SenderTest {
 
     private final Sender sender = new Sender();
-    private final TcpCaptor tcpCaptor = new TcpCaptor(8888);
+    private final TcpCaptor tcpCaptor = new TcpCaptor(9393);
 
     public SenderTest() throws GeneralSecurityException, IOException {
     }
