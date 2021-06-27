@@ -24,15 +24,36 @@ tasks.named<Test>("test") {
     }
 }
 
+apply<TestKeystoresPlugin>()
+
+configure<PrivateKey> {
+    alias.set("selfsigned")
+}
+
+configure<Keystore> {
+    commonName.set("localhost")
+    location.set("Singapore")
+    keystoreFilename.set("src/test/resources/test_keystore.jks")
+}
+
+configure<Truststore> {
+    certificateFilename.set("src/test/resources/server.crt")
+    truststoreFilename.set("src/test/resources/test_truststore.jks")
+}
+
+/***********************
+* TestKeystoresPlugin  *
+***********************/
+
 enum class KeyAlgorithm {
     RSA
 }
 
-interface PrivateKeyExtension {
+interface PrivateKey {
     val alias: Property<String>
 }
 
-interface KeystoreDefinitionExtension {
+interface Keystore {
     val keyAlgorithm: Property<KeyAlgorithm>
     val keySize: Property<Int>
     val validityPeriodDays: Property<Int>
@@ -46,7 +67,7 @@ interface KeystoreDefinitionExtension {
     val keystoreFilename: Property<String>
 }
 
-interface TruststoreDefinitionExtension {
+interface Truststore {
     val certificateFilename: Property<String>
     val certificateAlias: Property<String>
     val password: Property<String>
@@ -55,10 +76,10 @@ interface TruststoreDefinitionExtension {
 
 class TestKeystoresPlugin : Plugin<Project> {
     override fun apply(target: Project) {
-        val privateKey = target.extensions.create<PrivateKeyExtension>("privateKey")
+        val privateKey = target.extensions.create<PrivateKey>("privateKey")
         fun privateKeyAlias() = privateKey.alias.getOrElse("privatekey")
 
-        val keystore = target.extensions.create<KeystoreDefinitionExtension>("keystore")
+        val keystore = target.extensions.create<Keystore>("keystore")
         fun keystorePassword() = keystore.password.getOrElse("password")
 
         val createKeystore = target.tasks.register("createKeystore") {
@@ -86,7 +107,7 @@ class TestKeystoresPlugin : Plugin<Project> {
             }
         }
 
-        val truststore = target.extensions.create<TruststoreDefinitionExtension>("truststore")
+        val truststore = target.extensions.create<Truststore>("truststore")
 
         val exportCertificate = target.tasks.register("exportCertificate") {
             val certificateFilename = truststore.certificateFilename.getOrElse("test.crt")
@@ -124,21 +145,4 @@ class TestKeystoresPlugin : Plugin<Project> {
             dependsOn(exportCertificate)
         }
     }
-}
-
-apply<TestKeystoresPlugin>()
-
-configure<PrivateKeyExtension> {
-    alias.set("selfsigned")
-}
-
-configure<KeystoreDefinitionExtension> {
-    commonName.set("localhost")
-    location.set("Singapore")
-    keystoreFilename.set("src/test/resources/test_keystore.jks")
-}
-
-configure<TruststoreDefinitionExtension> {
-    certificateFilename.set("src/test/resources/server.crt")
-    truststoreFilename.set("src/test/resources/test_truststore.jks")
 }
