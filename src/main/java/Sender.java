@@ -104,10 +104,6 @@ public class Sender {
             return truststore;
         }
         throw new RuntimeException("Error: Missing truststore 'test_truststore.jks'.\n" +
-                "To create this truststore, follow these instructions.\n" +
-                "  1. From the root directory of this repository, run:\n\n" +
-                "     keytool -exportcert -keystore src/test/resources/test_keystore.jks -alias selfsigned -file src/test/resources/server.crt\n\n" +
-                "  2. From the root directory of this repository, run:\n\n" +
-                "     keytool -import -file src/test/resources/server.crt -alias testCA -keystore src/test/resources/test_truststore.jks\n\n");
+                "To fix this, run ./gradlew createTruststore");
     }
 }

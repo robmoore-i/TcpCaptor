@@ -34,11 +34,7 @@ public class MockTcpServer implements Runnable {
             return keystore;
         }
         throw new RuntimeException("Error: Missing keystore 'test_keystore.jks'.\n" +
-                "To create this keystore, follow these instructions.\n" +
-                "  1. Ensure that you are using Java 11, and that your associated binaries are synced with your JAVA_HOME pointing at a Java 11 JDK.\n" +
-                "  2. From the root directory of this repository, run:\n\n" +
-                "     keytool -genkey -keyalg RSA -alias selfsigned -keystore src/test/resources/test_keystore.jks -storepass password -validity 365 -keysize 2048\n\n" +
-                "  3. Try running the tests again.\n");
+                "To fix this, run ./gradlew createTruststore");
     }
 
     private static ServerSocket createSSLServerSocket(int port) throws GeneralSecurityException, IOException {
